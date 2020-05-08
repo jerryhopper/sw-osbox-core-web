@@ -8,7 +8,7 @@ require 'src/blackbox/bbAuth.php';
 require 'src/SetupVars.php';
 require 'src/blackbox/bbExec.php';
 require 'src/blackbox/bbDatabase.php';
-
+require 'src/PiholeNativeAuth.php';
 
 /*
 
@@ -26,7 +26,7 @@ require 'src/Gravity.php';
 require 'src/BbPiholeApi.php';
 require 'src/BbPiholeApiDb.php';
 require 'src/SQLite3.php';
-require 'src/PiholeNativeAuth.php';
+
 */
 
 
