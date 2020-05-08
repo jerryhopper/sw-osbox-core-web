@@ -2,6 +2,33 @@
 
 require 'vendor/autoload.php';
 
+require 'src/BlackBox.php';
+require 'src/blackbox/bbConfig.php';
+require 'src/blackbox/bbAuth.php';
+require 'src/SetupVars.php';
+require 'src/blackbox/bbExec.php';
+require 'src/blackbox/bbDatabase.php';
+
+
+/*
+
+require 'src/blackbox/bbCommand.php';
+
+require 'src/blackbox/bbState.php';
+
+require 'src/blackbox/bbGravityDb.php';
+require 'src/blackbox/bbPiholeDb.php';
+
+require 'src/blackbox/userObj.php';
+
+require 'src/FTL.php';
+require 'src/Gravity.php';
+require 'src/BbPiholeApi.php';
+require 'src/BbPiholeApiDb.php';
+require 'src/SQLite3.php';
+require 'src/PiholeNativeAuth.php';
+*/
+
 
 // Create Slim app
 $app = new \Slim\App();
