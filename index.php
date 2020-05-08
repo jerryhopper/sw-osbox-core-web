@@ -44,7 +44,7 @@ $container = $app->getContainer();
 
 // Register Twig View helper
 $container['view'] = function ($c) {
-    $view = new \Slim\Views\Twig('templates', [
+    $view = new \Slim\Views\Twig('osbox/templates', [
         'cache' => false /*'path/to/cache'*/
     ]);
 
