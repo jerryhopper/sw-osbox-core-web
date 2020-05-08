@@ -343,7 +343,8 @@ class BlackBox
 
         }
 
-        if ( $this->getState()==10 ) {
+        /*
+         if ( $this->getState()==10 ) {
             return "setup/index.html";
         }
         if ( $this->getState()==11 ) {
@@ -356,7 +357,7 @@ class BlackBox
         if ( $this->getState()==13 ) {
             return $templatename;
         }
-
+*/
         // if the network is configured, and device has a owner we can show the requested template
         if($this->config->networkConfigured() && $this->config->registeredToAccount() ){
             return $templatename;
