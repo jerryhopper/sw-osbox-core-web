@@ -244,10 +244,10 @@ class BlackBox
      * @return int
      */
     public function getState(){
-        $state = $this->config->getState();
+        //$state = $this->config->getState();
 
-        $readablestate = new bbState($state);
-        $this->readablestate = $readablestate->state;
+       // $readablestate = new bbState($state);
+        //$this->readablestate = $readablestate->state;
 
         return $state;
     }
