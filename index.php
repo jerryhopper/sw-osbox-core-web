@@ -74,8 +74,8 @@ $app->get('/', function ($request, $response, $args) {
     #print_r($request->getAttribute("AUTH"));
     #die();
 
-    return $response->withJson("whooo");
-    //return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
+    //return $response->withJson("whooo");
+    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
 })->setName('page_dashboard');
 
 
