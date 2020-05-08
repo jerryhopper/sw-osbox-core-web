@@ -76,8 +76,8 @@ class BlackBox
         /**
          * ....
          */
-        $this->isConfigured = $this->config->networkConfigured();
-        $this->isRegistered = $this->config->registeredToAccount();
+        $this->isConfigured = true;//$this->config->networkConfigured();
+        $this->isRegistered = true;//$this->config->registeredToAccount();
 
 
 
