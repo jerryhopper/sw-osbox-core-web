@@ -218,7 +218,7 @@ class BlackBox
      * @return array
      */
     public function UiParameters(array $array){
-        $log = "Current installation state: ".$this->getState()." (".$this->readablestate .") - ";
+        $log = "Current installation state: ".$this->getState()."  - ";
         $log .= "isConfigured = ".(int)$this->isConfigured." - ";
         $log .= "isRegistered = ".(int)$this->isRegistered." - ";
         if( $this->hasOwner() ){
