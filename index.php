@@ -39,7 +39,9 @@ $app = new \Slim\App();
 // Fetch DI Container
 $container = $app->getContainer();
 
-
+$container['BlackBox'] = function($c){
+    return new BlackBox();
+};
 
 
 // Register Twig View helper
