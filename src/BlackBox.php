@@ -249,7 +249,7 @@ class BlackBox
        // $readablestate = new bbState($state);
         //$this->readablestate = $readablestate->state;
 
-        return $state;
+        return 15;
     }
 
     /**
