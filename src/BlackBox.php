@@ -230,7 +230,7 @@ class BlackBox
         $theData = array(
             "SERVER_ADDR"=>$_SERVER['SERVER_ADDR'],
             "AUTH_LOGINURL"=>$this->getLoginUrl(),
-            "STATE"=>$this->getState(),
+            "STATE"=>16 /*$this->getState()*/,
             "AUTH"=>$this->getUserinfo(),
             "log"=>$log
         );
