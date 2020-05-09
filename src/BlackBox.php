@@ -359,14 +359,14 @@ class BlackBox
         }
 */
         // if the network is configured, and device has a owner we can show the requested template
-        if($this->config->networkConfigured() && $this->config->registeredToAccount() ){
-            return $templatename;
-        }
+        //if($this->config->networkConfigured() && $this->config->registeredToAccount() ){
+            //return $templatename;
+        //}
 
         //&& !$this->config->registeredToAccount()
-        if( !$this->config->networkConfigured() ){
-            return "setup/index.html";
-        }
+        //if( !$this->config->networkConfigured() ){
+          //  return "setup/index.html";
+        //}
 
         return "register/index.html";
 
