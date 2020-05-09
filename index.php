@@ -86,7 +86,7 @@ $app->get('/', function ($request, $response, $args) {
  *  Callback function.
  */
 $app->get('/callback', function ($request, $response, $args) {
-
+    return $response->withJson("whooo");
     $expires=3590;
 
     $allGetVars = $request->getQueryParams();
