@@ -66,6 +66,20 @@ $container['view'] = function ($c) {
  *
  *
  **/
+
+$app->get('/osbox/test', function ($request, $response, $args) {
+    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
+})->setName('page_dashboard');
+
+$app->get('/test', function ($request, $response, $args) {
+    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
+})->setName('page_dashboard');
+
+
+$app->get('/test', function ($request, $response, $args) {
+    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
+})->setName('page_dashboard');
+
 // Define home route
 $app->get('/', function ($request, $response, $args) {
 
@@ -77,13 +91,6 @@ $app->get('/', function ($request, $response, $args) {
     #die();
 
     //return $response->withJson("whooo");
-    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
-})->setName('page_dashboard');
-
-$app->get('/osbox/test', function ($request, $response, $args) {
-    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
-})->setName('page_dashboard');
-$app->get('/test', function ($request, $response, $args) {
     return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
 })->setName('page_dashboard');
 
