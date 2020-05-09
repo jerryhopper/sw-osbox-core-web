@@ -343,6 +343,7 @@ class BlackBox
 
         }
 
+
         /*
          if ( $this->getState()==10 ) {
             return "setup/index.html";
