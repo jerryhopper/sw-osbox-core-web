@@ -345,17 +345,17 @@ class BlackBox
 
 
         /*
-         if ( $this->getState()==10 ) {
+         if ( $this->getstate()==10 ) {
             return "setup/index.html";
         }
-        if ( $this->getState()==11 ) {
+        if ( $this->getstate()==11 ) {
             return "setup/index.html";
         }
-        if ( $this->getState()==12 ) {
+        if ( $this->getstate()==12 ) {
             return "register/index.html";
         }
 
-        if ( $this->getState()==13 ) {
+        if ( $this->getstate()==13 ) {
             return $templatename;
         }
 */

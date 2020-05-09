@@ -81,4 +81,90 @@ $app->get('/', function ($request, $response, $args) {
 })->setName('page_dashboard');
 
 
+
+/**
+ *  Callback function.
+ */
+$app->get('/callback', function ($request, $response, $args) {
+
+    $expires=3590;
+
+    $allGetVars = $request->getQueryParams();
+    $token = $allGetVars["token"];
+
+    $isAuthenticated = $this->BlackBox->validateToken($token);
+
+
+
+
+    /**
+     *  If user is not authenticated, redirect to error page.
+     */
+    if( ! $isAuthenticated ){
+        /**
+         *  If user is not authenticated, redirect to error page.
+         */
+        return $response->withRedirect( '/error');
+
+    }elseif( ! $this->BlackBox->hasOwner()  ){
+        /**
+         *  If user is authenticated, but the device has no owner.
+         */
+        //print_r($this->BlackBox->userObject);
+
+        $this->BlackBox->setOwner(  $this->BlackBox->userObject );
+
+        //die();
+        // set the cookie
+        $setcookies = new Slim\Http\Cookies();
+        $setcookies->set('auth', [
+            'value' => $token,
+            'expires' => $this->BlackBox->getUserinfo('expires'),
+            'path' => '/',
+            'domain' => 'blackbox.surfwijzer.nl',
+            'httponly' => true,
+            'hostonly' => false,
+            'secure' => true,
+            'samesite' => 'lax'
+        ]);
+        $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
+
+        return $response->withRedirect( '/firstrun');
+
+    }else{
+        /**
+         *  If user is authenticated, and the device has a owner.
+         */
+
+        // set the cookie
+        $setcookies = new Slim\Http\Cookies();
+        $setcookies->set('auth',[
+            'value' => $token,
+            'expires' => $this->BlackBox->getUserinfo('expires'),
+            'path' => '/',
+            'domain' => 'blackbox.surfwijzer.nl',
+            'httponly' => true,
+            'hostonly' => false,
+            'secure' => true,
+            'samesite' => 'lax'
+        ]);
+        $setcookies->set('persistentlogin',[
+            'value' => $this->BlackBox->setupVars["WEBPASSWORD"],
+            'expires' => $this->BlackBox->getUserinfo('expires'),
+            'path' => '/',
+            'domain' => 'blackbox.surfwijzer.nl',
+            'httponly' => true,
+            'hostonly' => false,
+            'secure' => true,
+            'samesite' => 'lax'
+        ]);
+        $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
+
+        return $response->withRedirect( '/');
+
+    }
+});
+
+
+
 $app->run();
