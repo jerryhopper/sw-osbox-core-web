@@ -68,19 +68,24 @@ $container['view'] = function ($c) {
  **/
 
 $app->get('/osbox/test', function ($request, $response, $args) {
-    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
+
+    return $response->withJson("/osbox/test");
+    return $this->view->render("register/index.html");
+
+    //return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
 })->setName('page_dashboard');
 
 
 
 $app->get('/test', function ($request, $response, $args) {
-    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
+    return $this->view->render("unregistered/index.html");
+//    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
 })->setName('page_dashboard');
 
 // Define home route
 $app->get('/', function ($request, $response, $args) {
 
-
+    return $this->view->render("register/index.html");
     #[authenticated] => 1
     #[user][userId] => 6ab331fb-e654-4de3-aa29-b403fcd557e1
     #[user][userEmail] => hopper.jerry@gmail.com
@@ -88,7 +93,7 @@ $app->get('/', function ($request, $response, $args) {
     #die();
 
     //return $response->withJson("whooo");
-    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
+    //return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
 })->setName('page_dashboard');
 
 
@@ -181,5 +186,11 @@ $app->get('/callback', function ($request, $response, $args) {
 });
 
 
+/*******************************************************************************************
+ *
+ *  ..
+ *
+ *******************************************************************************************/
 
-//$app->run();
+
+
