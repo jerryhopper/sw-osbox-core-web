@@ -80,16 +80,10 @@ $app->get('/', function ($request, $response, $args) {
     return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
 })->setName('page_dashboard');
 
-$app->get('/osbox//test', function ($request, $response, $args) {
-
-
-    #[authenticated] => 1
-    #[user][userId] => 6ab331fb-e654-4de3-aa29-b403fcd557e1
-    #[user][userEmail] => hopper.jerry@gmail.com
-    #print_r($request->getAttribute("AUTH"));
-    #die();
-
-    //return $response->withJson("whooo");
+$app->get('/osbox/test', function ($request, $response, $args) {
+    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
+})->setName('page_dashboard');
+$app->get('/test', function ($request, $response, $args) {
     return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
 })->setName('page_dashboard');
 
