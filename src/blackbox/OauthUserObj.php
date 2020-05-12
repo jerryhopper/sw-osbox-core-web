@@ -3,7 +3,7 @@
 use Lcobucci\JWT\Token;
 
 
-class userObj
+class OauthUserObj
 {
     public $id;
     public $email;

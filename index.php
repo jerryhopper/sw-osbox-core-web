@@ -5,10 +5,15 @@ require 'vendor/autoload.php';
 require 'src/BlackBox.php';
 require 'src/blackbox/bbConfig.php';
 require 'src/blackbox/bbAuth.php';
-require 'src/SetupVars.php';
+#require 'src/SetupVars.php';
 require 'src/blackbox/bbExec.php';
 require 'src/blackbox/bbDatabase.php';
+require 'src/OsboxDatabase/Users.php';
+
 require 'src/PiholeNativeAuth.php';
+
+require 'src/blackbox/OauthUserObj.php';
+require 'src/blackbox/bbInit.php';
 
 /*
 
@@ -19,7 +24,7 @@ require 'src/blackbox/bbState.php';
 require 'src/blackbox/bbGravityDb.php';
 require 'src/blackbox/bbPiholeDb.php';
 
-require 'src/blackbox/userObj.php';
+
 
 require 'src/FTL.php';
 require 'src/Gravity.php';
@@ -39,6 +44,12 @@ $app = new \Slim\App();
 // Fetch DI Container
 $container = $app->getContainer();
 
+$container['cookie'] = function($c){
+    $request = $c->get('request');
+    return new \Slim\Http\Cookies($request->getCookieParams());
+};
+
+
 $container['BlackBox'] = function($c){
     return new BlackBox();
 };
@@ -57,6 +68,31 @@ $container['view'] = function ($c) {
 
     return $view;
 };
+
+
+
+
+
+$app->add(function ($request, $response, $next) {
+
+    //$response->getBody()->write('BEFORE');
+
+    if ( !is_null( $this->cookie->get("auth") ) ){
+        $this->BlackBox->validateToken( $this->cookie->get("auth") );
+        #var_dump($this->cookie->get("auth") );
+        #print_r($this->cookie->get("persistentlogin"));
+        //die();
+    }
+
+    //print_r($this->BlackBox);
+    //die();
+
+    $response = $next($request, $response);
+#    $response->getBody()->write('AFTER');
+    return $response;
+});
+
+
 
 
 /**
@@ -82,18 +118,24 @@ $app->get('/test', function ($request, $response, $args) {
 //    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
 })->setName('page_dashboard');
 
+
+
 // Define home route
 $app->get('/', function ($request, $response, $args) {
 
-    return $this->view->render("register/index.html");
+//    return $this->view->render($response,"register/index.html");
     #[authenticated] => 1
     #[user][userId] => 6ab331fb-e654-4de3-aa29-b403fcd557e1
     #[user][userEmail] => hopper.jerry@gmail.com
     #print_r($request->getAttribute("AUTH"));
     #die();
 
+
+    #die();
+
+    //return $this->view->render( $response, "default/dashboard.html", $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
     //return $response->withJson("whooo");
-    //return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
+    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
 })->setName('page_dashboard');
 
 
@@ -104,7 +146,6 @@ $app->get('/callback', function ($request, $response, $args) {
 
     $allGetVars = $request->getQueryParams();
 
-    return $response->withJson($allGetVars);
 
 
     $expires=3590;
@@ -113,6 +154,7 @@ $app->get('/callback', function ($request, $response, $args) {
     $token = $allGetVars["token"];
 
     $isAuthenticated = $this->BlackBox->validateToken($token);
+    //return $response->withJson($isAuthenticated);
 
 
 
@@ -134,6 +176,7 @@ $app->get('/callback', function ($request, $response, $args) {
 
         $this->BlackBox->setOwner(  $this->BlackBox->userObject );
 
+        //die();
         //die();
         // set the cookie
         $setcookies = new Slim\Http\Cookies();

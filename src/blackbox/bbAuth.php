@@ -20,12 +20,17 @@ class bbAuth {
     private $authenticated  = false;
 
 
-    function __construct (){
+    function __construct ($osboxini){
+
+        $this->oauthClientId = $osboxini['IDP_CLIENTID'];
+        $this->AuthorizeUrl = $osboxini['IDP_AUTHORIZE_URL'];
+        $this->oauthIssuer = $osboxini['IDP_ISSUER'];
+        $this->oauthRedirect = $osboxini['IDP_REDIRECT_URL']; /// https://setup.surfwijzer.nl/blackbox/login
 
     }
 
     public function oAuthlogoutUrl(){
-        $lurl = "https://idp.surfwijzer.nl/oauth2/authorize?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fapi.surfwijzer.nl%2Fblackbox%2Flogin";
+        $lurl = $this->AuthorizeUrl."?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fsetup.surfwijzer.nl%2Fblackbox%2Flogin";
         return $lurl;
 
         //return "https://idp.surfwijzer.nl/oauth2/authorize?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fblackbox.surfwijzer.nl%2Fblackbox%2Flogin";
@@ -34,7 +39,7 @@ class bbAuth {
 
 
     public function oAuthloginUrl(){
-        $lurl = "https://idp.surfwijzer.nl/oauth2/authorize?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fapi.surfwijzer.nl%2Fblackbox%2Flogin";
+        $lurl = $this->AuthorizeUrl."?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fsetup.surfwijzer.nl%2Fblackbox%2Flogin";
         return $lurl;
 
         //return "https://idp.surfwijzer.nl/oauth2/authorize?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fblackbox.surfwijzer.nl%2Fblackbox%2Flogin";

@@ -6,15 +6,17 @@
 
 class bbDatabase{
 
-    private $databaselocation = "/etc/osbox/osbox.db";
     public $database;
 
     public $pdo;
+    public $users;
+
+
 
     function __construct($databaselocation = "/etc/osbox/db/osbox.db"){
 
         if(!file_exists($databaselocation)) {
-            throw new Exception("Databasexfile not found.");
+            throw new Exception("Databasefile not found.");
         }
 
         try {
@@ -28,23 +30,13 @@ class bbDatabase{
         }
 
         $this->pdo = $pdo;
+
+
+        $this->users = new OsboxDatabase\Users($pdo);
+
         //$this->database = $this->connect($databaselocation);
 
     }
-
-    function dropTable($users){
-        $sql = "DROP TABLE '".$users."'";
-        $stmt = $this->pdo->exec($sql);
-        var_dump($stmt);
-    }
-
-    function createUsersTable(){
-        $sql = "CREATE TABLE users (uuid VARCHAR(40)  UNIQUE NOT NULL,email VARCHAR(80)  NOT NULL,name VARCHAR(120)  NOT NULL,owner BOOLEAN DEFAULT 'false' NOT NULL,admin BOOLEAN DEFAULT 'false' NOT NULL);";
-        $stmt = $this->pdo->exec($sql);
-        var_dump($stmt);
-       //$stmt->execute();
-    }
-
 
     /**
      * @param $tablename
@@ -67,6 +59,60 @@ class bbDatabase{
         }
         return false;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    function dropTable($tableName){
+        $sql = "DROP TABLE '".$tableName."'";
+        $stmt = $this->pdo->exec($sql);
+        var_dump($stmt);
+    }
+
+    function createUsersTable(){
+        $sql = "CREATE TABLE users (uuid VARCHAR(40)  UNIQUE NOT NULL,email VARCHAR(80)  NOT NULL,name VARCHAR(120)  NOT NULL,owner BOOLEAN DEFAULT 'false' NOT NULL,admin BOOLEAN DEFAULT 'false' NOT NULL);";
+        $stmt = $this->pdo->exec($sql);
+        var_dump($stmt);
+       //$stmt->execute();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     function getOwner(){

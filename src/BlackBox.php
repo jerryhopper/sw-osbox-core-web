@@ -5,9 +5,42 @@ class BlackBox
 {
     /**
      * Configuration information
-     * @var bbConfig
+     * @var array osboxini
      */
-    public $config;
+    public $osboxini;
+
+    /**
+     * the pihole Setupvars.
+     * @var SetupVars
+     */
+    public $setupVars;
+
+    /**
+     * @var bool|false|string
+     */
+    public $webversion;
+
+
+    /**
+     * @var bool|mixed
+     */
+    public $setupstate;
+
+    /**
+     * @var bbDatabase
+     */
+    public $database;
+
+    /**
+     * @var bool
+     */
+    public $owner;
+
+
+
+
+
+
 
     /**
      * the UserObject
@@ -15,12 +48,6 @@ class BlackBox
      */
     public $userObject;
 
-
-    /**
-     * the pihole Setupvars.
-     * @var SetupVars
-     */
-    public $setupVars;
 
 
     public $isConfigured;
@@ -32,7 +59,6 @@ class BlackBox
 
 
 
-
     /**
      * BlackBox constructor.
      *
@@ -41,29 +67,89 @@ class BlackBox
     {
 
         /**
-         * Create the Config object.
+         * Init & get the Config objects.
          */
-        $this->config = new bbConfig();
+        $init = new bbInit();
+
+        // osbox.ini
+        $this->osboxini = $init->get_OsboxIni();
+        #echo "<pre>";
+        #var_dump($this->osboxini);
+
+        // setupVars.cfg
+        $this->setupVars = $init->get_PiholeVars();
+        #var_dump($this->setupVars);
+
+        // webversion
+        $this->webversion = $init->get_WebVersion();
+        #var_dump($this->webversion);
+
+
+        // setupstate
+        $this->setupstate = $init->get_SetupState();
+        #var_dump($this->setupstate);
+        #die();
+
+        //
+        try{
+            $this->database = new bbDatabase();
+        } catch(Exception $e){
+            echo $e->getMessage();
+        }
+
+
+        $this->owner = $this->database->users->getOwner();
+
+
+        //
+        //$this->database->users->dropTable();
+
+//var_dump($this->owner);
+
+
+        if( $this->hasOwner() ){
+            #die("Owner");
+        }else{
+           #die("NoOwner");
+        }
+
+#die();
+
+        #var_dump($this->database->users->getOwner());
+        #die();
+
+
+
+
 
 
         /**
          * Create the auth object
          */
-        $this->auth = new bbAuth();
+        $this->auth = new bbAuth($this->osboxini);
+
+
+
+        #var_dump( $this->auth->oAuthloginUrl());
+        //var_dump( $this->auth->oAuthlogoutUrl());
+        //die();
+
+
+
+        //$this->config = new bbConfig();
+
+
+
 
 
         /**
          * Create the setupvars
          */
-        $vars = new SetupVars();
-        $this->setupVars = $vars->get();
+        //$vars = new SetupVars();
+        //$this->setupVars = $vars->get();
 
 
-        try{
-            $this->database = new bbDatabase();
-        } catch(Exception $e){
 
-        }
 
 
         /**
@@ -72,6 +158,7 @@ class BlackBox
         $this->loginurl = $this->auth->oAuthloginUrl();
         $this->logouturl = $this->auth->oAuthlogoutUrl();
 
+#        error_log($this->loginurl);
 
         /**
          * ....
@@ -88,7 +175,15 @@ class BlackBox
 
         $this->piholeNativeAuth = new PiholeNativeAuth($this->setupVars);
 
+        //var_dump($this->setupVars);
+        #die();
+
     }
+
+
+
+
+
 
     public function debug(){
 
@@ -218,9 +313,9 @@ class BlackBox
      * @return array
      */
     public function UiParameters(array $array){
-        $log = "Current installation state: ".$this->getState()."  - ";
-        $log .= "isConfigured = ".(int)$this->isConfigured." - ";
-        $log .= "isRegistered = ".(int)$this->isRegistered." - ";
+        $log = "Current installation state: ".$this->setupstate."  - ";
+        //$log .= "isRegistered = ".(int)$this->isRegistered." - ";
+
         if( $this->hasOwner() ){
             $log .= "Device has owner. ";
         }else{
@@ -230,7 +325,7 @@ class BlackBox
         $theData = array(
             "SERVER_ADDR"=>$_SERVER['SERVER_ADDR'],
             "AUTH_LOGINURL"=>$this->getLoginUrl(),
-            "STATE"=>16 /*$this->getState()*/,
+            "STATE"=>$this->getState(),
             "AUTH"=>$this->getUserinfo(),
             "log"=>$log
         );
@@ -249,44 +344,9 @@ class BlackBox
        // $readablestate = new bbState($state);
         //$this->readablestate = $readablestate->state;
 
-        return 15;
+        return $this->setupstate;
     }
 
-    /**
-     * Validates token, and populates the userObject property
-     * @param $token
-     * @return bool
-     */
-    public function validateToken($token){
-
-        try {
-            $validation = $this->auth->validate($token);
-        }catch(Exception $e){
-            die("token error! ".$e->getMessage());
-        }
-
-        if(!$validation){
-            return false;
-        }else{
-            $this->userObject = new userObj($this->auth->token);
-
-            return true;
-        }
-
-    }
-
-    /**
-     * Returns if the device is registered to a owner.
-     * @return bool
-     */
-    public function hasOwner(){
-
-        if($this->config->owner){
-            return true;
-        }
-
-        return false;
-    }
 
 
     /**
@@ -343,6 +403,25 @@ class BlackBox
 
         }
 
+        if( $this->getstate()!="staticnetwork"){
+            // something is wrong, this shouldnt happen.
+
+        }
+
+
+        if( ! $this->hasOwner() ){
+            return "register/index.html";
+        }
+
+
+        return $templatename;
+
+
+        var_dump( $this->hasOwner() );
+        var_dump( $this->owner );
+
+
+        die();
 
         /*
          if ( $this->getstate()==10 ) {
@@ -374,12 +453,29 @@ class BlackBox
 
     }
 
+
+
+
+
+
+    /**
+     * @return bool
+     */
+    public function hasOwner(){
+
+        if(count($this->owner)>0){
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * @param $userObject
      * @return bool
      * @throws Exception
      */
-    public function setOwner( userObj $userObject /* $uid,$email*/){
+    public function setOwner( OauthUserObj $userObject ){
 
         $userObject->id;
         $userObject->email;
@@ -387,54 +483,42 @@ class BlackBox
         $userObject->roles;
 
 
-
+        $res = $this->database->users->setOwner($userObject);
+        #$var_dump($res);
         #$res = exec("sudo osbox owner set $uid");
-        error_log("sudo osbox owner set ".$userObject->id);
+        error_log("setOwner ".$userObject->id);
+        #die();
+        //$res = $this->exec("osbox owner set ".$userObject->id);
 
-        $res = $this->exec("osbox owner set ".$userObject->id);
-
-        return true;
+        return res;
 
         #return $this->config->setOwner($userObject /* $uid,$email*/);
     }
 
+
     /**
-     * @param $file
-     * @param $data
+     * Validates token, and populates the userObject property
+     * @param $token
      * @return bool
-     * @throws Exception
      */
-    private function write($file, $data){
-        if (!$handle = fopen($file, 'a')) {
-            throw new Exception("Cannot open file ($file)");
-            exit;
+    public function validateToken($token){
+
+        try {
+            $validation = $this->auth->validate($token);
+        }catch(Exception $e){
+            die("token error! ".$e->getMessage());
         }
 
-        // Write $somecontent to our opened file.
-        if (fwrite($handle, $data) === FALSE) {
-            throw new \Exception( "Cannot write to file ($file)");
-            exit;
+        if(!$validation){
+            return false;
+        }else{
+            $this->userObject = new OauthUserObj($this->auth->token);
+
+            return true;
         }
-        fclose($handle);
-        return true;
+
     }
 
-    /**
-     * @param $file
-     * @return mixed
-     * @throws Exception
-     */
-    private function read($file){
-        // ------------
-        if( !file_exists($file) ){
-            throw new \Exception("File does not exist ($file)");
-        }
-        $handle = fopen($file, "r");
-        $contents = fread($handle, filesize($file));
-        fclose($handle);
-
-        return $contents;
-    }
 
 
 }
