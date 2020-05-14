@@ -153,10 +153,10 @@ $app->get('/', function ($request, $response, $args) {
     #die();
 
     #die();
-
+    ;
     //return $this->view->render( $response, "default/dashboard.html", $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
     //return $response->withJson("whooo");
-    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["CSRFTOKEN"=>$_SESSION['token'],"PAGE"=>".page_dashboard"]));
+    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["CSRFTOKEN"=>$_SESSION['token'],"PAGE"=>".page_dashboard"]))->withHeader("X-Pi-hole","A black hole for Internet advertisements.");
 })->setName('page_dashboard');
 
 
