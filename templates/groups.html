@@ -11,6 +11,22 @@
 {% block content %}
 
 <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-primary">
+                    <h4 class="card-title ">Groepen</h4>
+                    <p class="card-category"> Manage uw groepen.</p>
+                </div>
+                <div class="card-body">
+                    <p>Creeer een nieuwe groep.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+
+        </div>
+    </div>
 
     <div class="row" id="groupcards">
 
@@ -160,6 +176,31 @@
 <script>
     window.groups = [];
 
+
+
+    function getAllDevices(){
+        const myRequest = new Request('/admin/api_db.php?network', {
+            method: 'GET',
+            credentials: "same-origin",
+            mode: 'cors',
+            cache: 'default'
+        });
+        fetch('/admin/api_db.php?network&_=1589452211132')
+            .then(response => response.json())
+            .then(data => parseAllDevices(data));
+
+
+    }
+
+    function parseAllDevices(data){
+
+    }
+
+
+
+
+
+
     function move(deze,fromgroup){
 
         //console.log("Move ip : "+deze.id);
@@ -263,7 +304,7 @@
 
             thelist = ''
             for( memberitem in items){
-                thelist = thelist +'<li  id="'+items[memberitem].ip+'" ><i>'+ items[memberitem].name +'</i> '+items[memberitem].ip+' </li>'
+                thelist = thelist +'<li  id="'+items[memberitem].ip+'" ><i>'+ items[memberitem].name +'</i><br/>'+items[memberitem].ip+' </li>'
             }
             //console.log(items);
 
@@ -327,8 +368,8 @@
     }
 
     function start (){
-        get_unconfigured_clients(function(data){
-            window.unconfiguredclients=data;
+        //get_unconfigured_clients(function(data){
+            //window.unconfiguredclients=data;
 
             get_clients(function(data){
                 window.clients=data;
@@ -338,7 +379,7 @@
 
                 })
             });
-        });
+        //});
 
 
 
@@ -429,7 +470,7 @@
 </script>
 <style>
     div.card-body ul li {
-        height:50px
+        /*height:50px*/
     }
     li:hover{
         background: #66615b;

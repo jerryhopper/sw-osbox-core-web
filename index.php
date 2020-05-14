@@ -39,6 +39,86 @@ require 'src/SQLite3.php';
 
 */
 
+
+
+// Set which extension types render as Block Page (Including "" for index.ext)
+$validExtTypes = array("asp", "htm", "html", "php", "rss", "xml", "");
+
+// Get extension of current URL
+$currentUrlExt = pathinfo($_SERVER["REQUEST_URI"], PATHINFO_EXTENSION);
+
+// Set mobile friendly viewport
+$viewPort = '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>';
+
+// Set response header
+function setHeader($type = "x") {
+    header("X-Pi-hole: A black hole for Internet advertisements.");
+    if (isset($type) && $type === "js") header("Content-Type: application/javascript");
+}
+
+// Determine block page type
+if ($serverName==="localhost"){
+    setHeader();
+    exit;
+}
+if ($serverName === "blackbox.surfwijzer.nl"
+    || (!empty($_SERVER["VIRTUAL_HOST"]) && $serverName === $_SERVER["VIRTUAL_HOST"])) {
+    // Redirect to Web Interface
+
+    //exit(header("Location: /admin"));
+} elseif (filter_var($serverName, FILTER_VALIDATE_IP) || in_array($serverName, $authorizedHosts)) {
+    // Set Splash Page output
+    $splashPage = "
+    <html>
+      <head>
+        $viewPort
+        <link rel='stylesheet' href='pihole/blockingpage.css' type='text/css'/>
+      </head>
+      <body id='splashpage'>
+        <img src='admin/img/logo.svg'/><br/>
+        Pi-<b>hole</b>: Your black hole for Internet advertisements<br/>
+        <a href='/admin'>Did you mean to go to the admin panel?</a>
+      </body>
+    </html>
+    ";
+
+    // Set splash/landing page based off presence of $landPage
+    $renderPage = is_file(getcwd()."/$landPage") ? include $landPage : "$splashPage";
+
+    // Unset variables so as to not be included in $landPage
+    unset($serverName, $svPasswd, $svEmail, $authorizedHosts, $validExtTypes, $currentUrlExt, $viewPort);
+
+    // Render splash/landing page when directly browsing via IP or authorized hostname
+    exit($renderPage);
+} elseif ($currentUrlExt === "js") {
+    // Serve Pi-hole Javascript for blocked domains requesting JS
+    exit(setHeader("js").'var x = "Pi-hole: A black hole for Internet advertisements."');
+} elseif (strpos($_SERVER["REQUEST_URI"], "?") !== FALSE && isset($_SERVER["HTTP_REFERER"])) {
+    // Serve blank image upon receiving REQUEST_URI w/ query string & HTTP_REFERRER
+    // e.g: An iframe of a blocked domain
+    exit(setHeader().'<html>
+        <head><script>window.close();</script></head>
+        <body><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs="></body>
+    </html>');
+} elseif (!in_array($currentUrlExt, $validExtTypes) || substr_count($_SERVER["REQUEST_URI"], "?")) {
+    // Serve SVG upon receiving non $validExtTypes URL extension or query string
+    // e.g: Not an iframe of a blocked domain, such as when browsing to a file/query directly
+    // QoL addition: Allow the SVG to be clicked on in order to quickly show the full Block Page
+    $blockImg = '<a href="/"><svg xmlns="http://www.w3.org/2000/svg" width="110" height="16"><defs><style>a {text-decoration: none;} circle {stroke: rgba(152,2,2,0.5); fill: none; stroke-width: 2;} rect {fill: rgba(152,2,2,0.5);} text {opacity: 0.3; font: 11px Arial;}</style></defs><circle cx="8" cy="8" r="7"/><rect x="10.3" y="-6" width="2" height="12" transform="rotate(45)"/><text x="19.3" y="12">Blocked by Pi-hole</text></svg></a>';
+    exit(setHeader()."<html>
+        <head>$viewPort</head>
+        <body>$blockImg</body>
+    </html>");
+}
+
+
+
+
+
+
+
+
+
 session_start();
 // Create Slim app
 $app = new \Slim\App();

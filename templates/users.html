@@ -85,15 +85,16 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="table_users">
                             <thead class=" text-primary">
-                            <th>ID</th>
-                            <th>Naam</th>
-                            <th>Email</th>
-                            <th>.</th>
-                            <th>type</th>
+                                <th>ID</th>
+                                <th>Naam</th>
+                                <th>Email</th>
+                                <th>.</th>
+                                <th>type</th>
                             </thead>
                             <tbody>
+
                             <tr>
                                 <td>1</td>
                                 <td>Jerry Hopper</td>
@@ -118,7 +119,11 @@
 
         </div>
     </div>
-
+    <script>
+        fetch('/api/users')
+            .then(response => response.json())
+            .then(data => console.log(data));
+    </script>
 
 
 
