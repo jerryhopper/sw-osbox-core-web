@@ -20,10 +20,13 @@
     <!-- CSS Files -->
     <link href="../osbox/assets/css/material-dashboard.css?v=2.1.2" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link href="../osbox/assets/demo/demo.css" rel="stylesheet" />
+    <!-- <link href="../osbox/assets/demo/demo.css" rel="stylesheet" /> -->
     {% endblock %}
 </head>
 <body class="">
+<script>
+    var token="{{ CSRFTOKEN }}";
+</script>
     <div class="wrapper ">
 
         {% block sidebarmenu %}
@@ -299,7 +302,7 @@
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../osbox/assets/js/material-dashboard.js?v=2.1.2" type="text/javascript"></script>
     <!-- Material Dashboard DEMO methods, don't include it in your project! -->
-    <script src="../osbox/assets/demo/demo.js"></script>
+    <!-- <script src="../osbox/assets/demo/demo.js"></script>-->
 
     <script>
         $(document).ready(function() {

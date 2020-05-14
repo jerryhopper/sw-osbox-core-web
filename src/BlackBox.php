@@ -98,6 +98,12 @@ class BlackBox
         }
 
 
+        try{
+            $this->PiHole = new phDatabase();
+        }catch(Exception $e){
+            $e->getMessage();
+        }
+
         $this->owner = $this->database->users->getOwner();
 
 
@@ -391,12 +397,6 @@ class BlackBox
 
     public function showPage( $templatename , $request ){
 
-        /*
-            "10"=>"Ready for shipping",
-            "11"=>"static network configured",
-            "12"=>"namebased host reachable",
-            "13"=>"device registered to user"
-        */
 
         if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" &&
             $request->getUri()->getScheme()=="https" ){
@@ -405,7 +405,7 @@ class BlackBox
 
         if( $this->getstate()!="staticnetwork"){
             // something is wrong, this shouldnt happen.
-
+            die("something is wrong, this shouldnt happen.");
         }
 
 
@@ -415,41 +415,6 @@ class BlackBox
 
 
         return $templatename;
-
-
-        var_dump( $this->hasOwner() );
-        var_dump( $this->owner );
-
-
-        die();
-
-        /*
-         if ( $this->getstate()==10 ) {
-            return "setup/index.html";
-        }
-        if ( $this->getstate()==11 ) {
-            return "setup/index.html";
-        }
-        if ( $this->getstate()==12 ) {
-            return "register/index.html";
-        }
-
-        if ( $this->getstate()==13 ) {
-            return $templatename;
-        }
-*/
-        // if the network is configured, and device has a owner we can show the requested template
-        //if($this->config->networkConfigured() && $this->config->registeredToAccount() ){
-            //return $templatename;
-        //}
-
-        //&& !$this->config->registeredToAccount()
-        //if( !$this->config->networkConfigured() ){
-          //  return "setup/index.html";
-        //}
-
-        return "register/index.html";
-
 
     }
 

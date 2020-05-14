@@ -1,0 +1,456 @@
+{% extends "_base.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+{{ parent() }}
+<style type="text/css">
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row" id="groupcards">
+
+
+
+
+
+
+    </div>
+
+<!--
+    <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-warning card-header-icon">
+                    <div class="card-icon">
+                        <i class="fa fa-cogs"></i>
+                    </div>
+                    <p class="card-category">System Load</p>
+                    <h3 class="card-title">
+                        <small>0.02 0.02 0.02</small>
+                    </h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons text-info">help_outline</i>
+                        Laatste 1-, 5-, en 15 minuten
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="fa fa-thermometer-half"></i>
+                    </div>
+
+                    <p class="card-category">Cpu Temperatuur </p>
+                    <h3 class="card-title">30.8 °C</h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">date_range</i> Last 24 Hours
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-danger card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">sd_storage</i>
+                    </div>
+                    <p class="card-category">Opslag ruimte</p>
+                    <h3 class="card-title">1.4%</h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">sd_storage</i> 16GB Totaal
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-info card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">memory</i>
+
+                    </div>
+                    <p class="card-category">Geheugen gebruik</p>
+                    <h3 class="card-title">12.3%</h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">memory</i>1024MB Totaal
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card card-chart">
+                <div class="card-header card-header-success">
+                    <div class="ct-chart" id="dailySalesChart"></div>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Daily Sales</h4>
+                    <p class="card-category">
+                        <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">access_time</i> updated 4 minutes ago
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-chart">
+                <div class="card-header card-header-warning">
+                    <div class="ct-chart" id="websiteViewsChart"></div>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Email Subscriptions</h4>
+                    <p class="card-category">Last Campaign Performance</p>
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">access_time</i> campaign sent 2 days ago
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-chart">
+                <div class="card-header card-header-danger">
+                    <div class="ct-chart" id="completedTasksChart"></div>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Completed Tasks</h4>
+                    <p class="card-category">Last Campaign Performance</p>
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">access_time</i> campaign sent 2 days ago
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+--->
+</div>
+
+<!---
+
+/admin/scripts/pi-hole/php/groups.php
+
+-->
+
+{% endblock %}
+
+{% block specificpagejs %}
+<script>
+    window.groups = [];
+
+    function move(deze,fromgroup){
+
+        //console.log("Move ip : "+deze.id);
+        //console.log("From group : "+fromgroup.split('-')[1]);
+
+
+
+
+        const inputOptions = new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(window.groups)
+            }, 1000)
+        })
+        window.moveto =deze.id;
+        window.movefrom =fromgroup.split('-')[1];
+
+        Swal.fire({
+            title: 'Verplaats '+deze.id+' naar groep',
+            html: deze.id+' '+window.unconfiguredclients[deze.id],
+            input: 'radio',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
+            inputOptions: inputOptions,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to choose something!'
+                }
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Verplaats',
+            showLoaderOnConfirm: true,
+            preConfirm: (group) => {
+                console.log('Moving '+window.moveto+' from '+ window.movefrom + ' to ' + group);
+
+                return fetch(`/api/move/${window.moveto}/togroup/${group}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(response.statusText)
+                        }
+                        return response.json()
+                    })
+                    .catch(error => {
+
+                        Swal.showValidationMessage(
+                            `Request failed: ${error}`
+                        )
+                    })
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.value) {
+
+                //thedata = $("li#"+result.value.IP).html();
+                //$("li#"+result.value.IP).html("");
+
+                //$("ul#"+result.value.GROUP).append(thedata);
+
+                console.log('Moved '+result.value.IP+' from '+ window.movefrom + ' to '+result.value.GROUP);
+                //console.log(result.value.IP);
+                //console.log(result.value.GROUP);
+
+                window.location.reload()
+
+                //element = $('li#'+result.value.IP);
+                //console.log(element);
+
+                //$('ul#group-'+result.value.GROUP).append( element );
+
+                /*Swal.fire({
+                    title: `${result.value.login}'s avatar`,
+                    imageUrl: result.value.avatar_url
+                })
+                */
+            }
+        });
+
+    }
+
+
+    function populate(data){
+        //console.log(data.data);
+        //
+        // window.groups.push( theObject );
+        //
+        //
+        theObject = {}
+
+        for (theitem in data.data){
+
+            theObject[data.data[theitem].id.toString() ]=data.data[theitem].name;
+
+
+            //console.log("Item id:"+data.data[theitem].id);
+            //console.log("Item name:"+data.data[theitem].name);
+            //console.log( data.data[item]);
+
+
+
+            items = window.clients.data.filter(item => item.groups.includes(data.data[theitem].id) );
+
+            thelist = ''
+            for( memberitem in items){
+                thelist = thelist +'<li  id="'+items[memberitem].ip+'" ><i>'+ items[memberitem].name +'</i> '+items[memberitem].ip+' </li>'
+            }
+            //console.log(items);
+
+
+
+            if(data.data[theitem].id==0){
+                thelist = ''
+                for( memberitem in window.unconfiguredclients){
+                    //('+ window.unconfiguredclients[memberitem] +'
+                    thelist = thelist +'<li id="'+memberitem+'"><i>'+ window.unconfiguredclients[memberitem] +'</i> '+ memberitem+' </li>'
+                }
+            }
+
+            //var found = window.clients.data.find(function(element) {
+            //    return element.id == data.data[item].id;
+            //});
+
+            //if (typeof found !== 'undefined') {
+            //    console.log(found.name);
+           // }
+
+
+
+            $("#groupcards").append(' \
+                <div class="col-lg-3 col-md-6 col-sm-6" id="groupID'+data.data[theitem].id +'"  >\
+                    <div class="card card-stats">\
+                        <div class="card-header card-header-warning card-header-icon">\
+                            <div class="card-icon">\
+                                <i class="fa fa-cogs"></i>\
+                            </div>\
+                            <h3 class="card-title">\
+                                <small>'+data.data[theitem].name+'</small>\
+                            </h3>\
+                            <p class="card-category">Groep</p>\
+                        </div>\
+                        <div class="card-body">\
+                        <ul id="group-'+data.data[theitem].id+'" class="" >\
+                        '+ thelist +'\
+                        </ul>\
+                        </div>\
+                        <div class="card-footer">\
+                            <div class="stats">\
+                                <i class="material-icons text-info">help_outline</i>\
+                                    Laatste 1-, 5-, en 15 minuten\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>');
+
+            //console.log(item);
+
+        }
+
+        window.groups = theObject;
+
+        $("div#groupcards li").click(function(){
+            //console.log(  $(this).attr('id') );
+            //console.log( ">>>>>>>>>"+ $(this).parent().attr('id') );
+            move(this,$(this).parent().attr('id'));
+        });
+    }
+
+    function start (){
+        get_unconfigured_clients(function(data){
+            window.unconfiguredclients=data;
+
+            get_clients(function(data){
+                window.clients=data;
+
+                get_groups(function(data){
+                   populate(data);
+
+                })
+            });
+        });
+
+
+
+    }
+
+
+    function printcard(data){
+
+    }
+
+    function get_unconfigured_clients(callback){
+        const myHeaders = new Headers();
+
+        let formData = new FormData();
+        formData.append('token', '{{ CSRFTOKEN }}');
+        formData.append('action', 'get_unconfigured_clients');
+
+        const myRequest = new Request('/admin/scripts/pi-hole/php/groups.php', {
+            method: 'POST',
+            credentials: "same-origin",
+            headers: myHeaders,
+            mode: 'cors',
+            cache: 'default',
+            body: formData
+        });
+        fetch(myRequest)
+            .then(response => response.json())
+            .then(data => callback(data));
+
+    }
+
+    function get_clients(callback){
+        const myHeaders = new Headers();
+
+        let formData = new FormData();
+        formData.append('token', '{{ CSRFTOKEN }}');
+        formData.append('action', 'get_clients');
+
+        const myRequest = new Request('/admin/scripts/pi-hole/php/groups.php', {
+            method: 'POST',
+            credentials: "same-origin",
+            headers: myHeaders,
+            mode: 'cors',
+            cache: 'default',
+            body: formData
+        });
+        fetch(myRequest)
+            .then(response => response.json())
+            .then(data => callback(data));
+
+    }
+
+    function get_groups(callback){
+        const myHeaders = new Headers();
+
+        let formData = new FormData();
+        formData.append('token', '{{ CSRFTOKEN }}');
+        formData.append('action', 'get_groups');
+
+
+
+        const myRequest = new Request('/admin/scripts/pi-hole/php/groups.php', {
+            method: 'POST',
+            credentials: "same-origin",
+            headers: myHeaders,
+            mode: 'cors',
+            cache: 'default',
+            body: formData
+        });
+
+        fetch(myRequest)
+            .then(response => response.json())
+            .then(data => callback(data));
+    }
+
+
+
+
+
+
+
+
+    $(document).ready(function(){
+        // your page initialization code here
+        // the DOM will be available here
+        start();
+    });
+</script>
+<style>
+    div.card-body ul li {
+        height:50px
+    }
+    li:hover{
+        background: #66615b;
+    }
+</style>
+{% endblock %}
+
+
+
+
+{% block footer %}
+<div class="container-fluid">
+    <nav class="float-left">
+
+    </nav>
+    <div class="copyright float-right">
+        &copy;
+        <script>
+            document.write(new Date().getFullYear())
+        </script>, made with <i class="material-icons">favorite</i> by
+        <a href="https://www.surfwijzer.nl" target="_blank">Surfwijzer</a> for a better web.
+    </div>
+</div>
+{% endblock %}
