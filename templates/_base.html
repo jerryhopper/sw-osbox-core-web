@@ -21,6 +21,9 @@
     <link href="../osbox/assets/css/material-dashboard.css?v=2.1.2" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <!-- <link href="../osbox/assets/demo/demo.css" rel="stylesheet" /> -->
+    <link rel="stylesheet" type="text/css" href="../osbox/assets/datatables.min.css"/>
+
+
     {% endblock %}
 </head>
 <body class="">
@@ -99,7 +102,7 @@
                     </li>
 
                     <li class="nav-item page_groups">
-                        <a class="nav-link" href="./groups">
+                        <a class="nav-link" href="/groups">
                             <i class="material-icons">account_tree</i>
                             <p>groups</p>
                         </a>
@@ -303,7 +306,7 @@
     <script src="../osbox/assets/js/material-dashboard.js?v=2.1.2" type="text/javascript"></script>
     <!-- Material Dashboard DEMO methods, don't include it in your project! -->
     <!-- <script src="../osbox/assets/demo/demo.js"></script>-->
-
+<script type="text/javascript" src="../osbox/assets/datatables.min.js"></script>
     <script>
         $(document).ready(function() {
             $().ready(function() {

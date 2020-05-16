@@ -86,7 +86,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="myTable">
                             <thead class=" text-primary">
                             <th>ID</th>
                             <th>NAME</th>
@@ -114,61 +114,6 @@
     <script>
 
 
-        const myRequest = new Request('/admin/api_db.php?network', {
-            method: 'GET',
-            credentials: "same-origin",
-            mode: 'cors',
-            cache: 'default'
-        });
-        fetch('/admin/api_db.php?network&_=1589452211132')
-            .then(response => response.json())
-            .then(data => populateTable(data));
-
-        function populateTable(data){
-            for( item in data.network){
-
-                var ips = ""
-                for ( ip in data.network[item].ip ){
-                    ips = ips + '<li>'+data.network[item].ip[ip]+'</li>';
-                }
-
-
-                data.network[item].lastQuery; //
-                data.network[item].firstSeen;
-                data.network[item].numQueries;
-
-                console.log( new Date().getTime(), data.network[item].lastQuery);
-                console.log( (data.network[item].lastQuery*1000) );
-
-                var secondsAgo = (new Date().getTime()-(data.network[item].lastQuery*1000) )/1000;
-
-                if (secondsAgo > 86400 ){
-                    var color = "background-color: rgb(255, 191, 170);";
-                }else if (secondsAgo < 7200 ) {
-                    var color = "background-color: rgb(231, 255, 222);";
-                }else{
-                    var color = "background-color: rgb(255, 237, 217);";
-                }
-                console.log( (new Date().getTime()-(data.network[item].lastQuery*1000) )/1000 );
-
-                //43.200
-                //86400
-
-                $("#networktable").append("<tr style='"+color+"'>\n" +
-                    "                                <td>"+data.network[item].id+"</td>\n" +
-                    "                                <td>"+data.network[item].name+"</td>\n" +
-                    "                                <td>"+data.network[item].macVendor+"</td>\n" +
-
-                    "                                <td><ul>"+data.network[item].hwaddr+"</ul></td>\n" +
-
-
-                    /*"                                <td class=\"text-primary\">Admin</td>\n" +*/
-                    "                                <td>"+ips+"</td>\n" +
-                    "                            </tr>");
-            }
-        }
-
-
     </script>
 
 
@@ -179,4 +124,91 @@
     </div>
 
 </div>
+{% endblock %}
+
+{% block specificpagejs %}
+<script>
+
+
+
+    function populateTable(data){
+        for( item in data.network){
+
+            var ips = ""
+            for ( ip in data.network[item].ip ){
+                ips = ips + '<li>'+data.network[item].ip[ip]+'</li>';
+            }
+
+
+            data.network[item].lastQuery; //
+            data.network[item].firstSeen;
+            data.network[item].numQueries;
+
+            console.log( new Date().getTime(), data.network[item].lastQuery);
+            console.log( (data.network[item].lastQuery*1000) );
+
+            var secondsAgo = (new Date().getTime()-(data.network[item].lastQuery*1000) )/1000;
+
+            if (secondsAgo > 86400 ){
+                var color = "background-color: rgb(255, 191, 170);";
+            }else if (secondsAgo < 7200 ) {
+                var color = "background-color: rgb(231, 255, 222);";
+            }else{
+                var color = "background-color: rgb(255, 237, 217);";
+            }
+            console.log( (new Date().getTime()-(data.network[item].lastQuery*1000) )/1000 );
+
+            //43.200
+            //86400
+
+            $("#networktable").append("<tr style='"+color+"'>\n" +
+                "                                <td>"+data.network[item].id+"</td>\n" +
+                "                                <td>"+data.network[item].name+"</td>\n" +
+                "                                <td>"+data.network[item].macVendor+"</td>\n" +
+
+                "                                <td><ul>"+data.network[item].hwaddr+"</ul></td>\n" +
+
+
+                /*"                                <td class=\"text-primary\">Admin</td>\n" +*/
+                "                                <td>"+ips+"</td>\n" +
+                "                            </tr>");
+        }
+    }
+
+
+    const myRequest = new Request('/admin/api_db.php?network', {
+        method: 'GET',
+        credentials: "same-origin",
+        mode: 'cors',
+        cache: 'default'
+    });
+
+    /*
+    fetch('/admin/api_db.php?network&_=1589452211132')
+        .then(response => response.json())
+        .then(data => populateTable(data));
+
+*/
+
+    $(document).ready(function() {
+
+        $('#myTable').DataTable( {
+            ajax: {
+                url: '/admin/api_db.php?network',
+                dataSrc: 'network'
+            },
+            columns: [
+                { "data": "id" },
+                { "data": "name" },
+                { "data": "macVendor" },
+                { "data": "hwaddr" },
+                { "data": "ip" }
+            ]
+        } );
+
+    });
+
+
+
+</script>
 {% endblock %}

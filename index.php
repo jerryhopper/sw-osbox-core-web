@@ -55,7 +55,7 @@ function setHeader($type = "x") {
     header("X-Pi-hole: A black hole for Internet advertisements.");
     if (isset($type) && $type === "js") header("Content-Type: application/javascript");
 }
-
+/*
 // Determine block page type
 if ($serverName==="localhost"){
     setHeader();
@@ -66,7 +66,7 @@ if ($serverName === "blackbox.surfwijzer.nl"
     // Redirect to Web Interface
 
     //exit(header("Location: /admin"));
-} elseif (filter_var($serverName, FILTER_VALIDATE_IP) || in_array($serverName, $authorizedHosts)) {
+} elseif (filter_var($serverName, FILTER_VALIDATE_IP) || in_array($serverName, $authorizedHosts) && $_SERVER['HTTP_HOST']!="blackbox.surfwijzer.nl") {
     // Set Splash Page output
     $splashPage = "
     <html>
@@ -90,17 +90,17 @@ if ($serverName === "blackbox.surfwijzer.nl"
 
     // Render splash/landing page when directly browsing via IP or authorized hostname
     exit($renderPage);
-} elseif ($currentUrlExt === "js") {
+} elseif ($currentUrlExt === "js" && $_SERVER['HTTP_HOST']!="blackbox.surfwijzer.nl") {
     // Serve Pi-hole Javascript for blocked domains requesting JS
     exit(setHeader("js").'var x = "Pi-hole: A black hole for Internet advertisements."');
-} elseif (strpos($_SERVER["REQUEST_URI"], "?") !== FALSE && isset($_SERVER["HTTP_REFERER"])) {
+} elseif (strpos($_SERVER["REQUEST_URI"], "?") !== FALSE && isset($_SERVER["HTTP_REFERER"]) && $_SERVER['HTTP_HOST']!="blackbox.surfwijzer.nl") {
     // Serve blank image upon receiving REQUEST_URI w/ query string & HTTP_REFERRER
     // e.g: An iframe of a blocked domain
     exit(setHeader().'<html>
         <head><script>window.close();</script></head>
         <body><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs="></body>
     </html>');
-} elseif (!in_array($currentUrlExt, $validExtTypes) || substr_count($_SERVER["REQUEST_URI"], "?")) {
+} elseif (!in_array($currentUrlExt, $validExtTypes) || substr_count($_SERVER["REQUEST_URI"], "?") && $_SERVER['HTTP_HOST']!="blackbox.surfwijzer.nl") {
     // Serve SVG upon receiving non $validExtTypes URL extension or query string
     // e.g: Not an iframe of a blocked domain, such as when browsing to a file/query directly
     // QoL addition: Allow the SVG to be clicked on in order to quickly show the full Block Page
@@ -113,7 +113,7 @@ if ($serverName === "blackbox.surfwijzer.nl"
 
 
 
-
+*/
 
 
 
@@ -219,6 +219,13 @@ $app->get('/users', function ($request, $response, $args) {
 $app->get('/groups', function ($request, $response, $args) {
     return $this->view->render( $response, $this->BlackBox->showpage( "groups.html", $request ), $this->BlackBox->UiParameters(["CSRFTOKEN"=>$_SESSION['token'],"PAGE"=>".page_groups"]));
 })->setName('page_groups');
+
+
+$app->get('/groups/{groupid}', function ($request, $response, $args) {
+    return $this->view->render( $response, $this->BlackBox->showpage( "group.html", $request ), $this->BlackBox->UiParameters(["CSRFTOKEN"=>$_SESSION['token'],"PAGE"=>".page_groups"]));
+})->setName('page_groups');
+
+
 
 
 

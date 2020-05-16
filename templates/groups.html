@@ -12,15 +12,49 @@
 
 <div class="container-fluid">
     <div class="row">
+
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header card-header-primary">
                     <h4 class="card-title ">Groepen</h4>
                     <p class="card-category"> Manage uw groepen.</p>
                 </div>
+
                 <div class="card-body">
-                    <p>Creeer een nieuwe groep.</p>
+
+
+                    <div class="col-md-12">
+                        <div class="box" id="add-group">
+                            <!-- /.box-header -->
+                            <div class="box-header with-border">
+                                <p></p>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="new_name">Name:</label>
+                                        <input id="new_name" type="text" class="form-control" placeholder="Group name">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="new_desc">Description:</label>
+                                        <input id="new_desc" type="text" class="form-control" placeholder="Group description (optional)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer clearfix">
+                                <button id="btnAdd" class="btn btn-primary pull-right">Add</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
                 </div>
+
             </div>
         </div>
         <div class="col-md-12">
@@ -304,7 +338,7 @@
 
             thelist = ''
             for( memberitem in items){
-                thelist = thelist +'<li  id="'+items[memberitem].ip+'" ><i>'+ items[memberitem].name +'</i><br/>'+items[memberitem].ip+' </li>'
+                thelist = thelist +'<li  id="'+items[memberitem].ip+'" ><i class="material-icons">device_unknown</i>  <i>'+ items[memberitem].name +'</i><br/>'+items[memberitem].ip+' </li>'
             }
             //console.log(items);
 
@@ -329,21 +363,38 @@
 
 
             $("#groupcards").append(' \
-                <div class="col-lg-3 col-md-6 col-sm-6" id="groupID'+data.data[theitem].id +'"  >\
+                <div class="col-lg-6 col-md-6 col-sm-6" id="groupID'+data.data[theitem].id +'"  >\
                     <div class="card card-stats">\
-                        <div class="card-header card-header-warning card-header-icon">\
+                        <div class="card-header card-header-warning card-header-icon" style="cursor: pointer;" onclick="window.location=\'/groups/'+ data.data[theitem].id +'\'"  >\
                             <div class="card-icon">\
                                 <i class="fa fa-cogs"></i>\
                             </div>\
                             <h3 class="card-title">\
                                 <small>'+data.data[theitem].name+'</small>\
                             </h3>\
-                            <p class="card-category">Groep</p>\
+                            <p class="card-category">'+data.data[theitem].description+'</p>\
                         </div>\
                         <div class="card-body">\
+                        <p></p>\
                         <ul id="group-'+data.data[theitem].id+'" class="" >\
                         '+ thelist +'\
                         </ul>\
+                        <hr>\
+                        <div>\
+                            <i class="material-icons" style="float:left;margin-top:5px;">block</i> \
+                            <button>Ads</button> <button>Tracking</button>\
+                        </div>\
+                        <hr>\
+                        <div>\
+                            <i class="material-icons" style="float:left;margin-top:5px;">alarm</i>\
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">\
+                              <button type="button" class="btn btn-danger">Internet @ 23:00 - 06:00</button>\
+                            </div>\
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">\
+                              <button type="button" class="btn btn-danger">Social @ 18:00 - 20:00</button>\
+                            </div>\
+                        </div>\
+                        <hr>\
                         </div>\
                         <div class="card-footer">\
                             <div class="stats">\
@@ -459,14 +510,94 @@
 
 
 
+    $(document).ready(function(){
+        // your page initialization code here
+        // the DOM will be available here
+        //
+
+        $("#groupcards div").click(function(){
+           console.log( $(this).attr("id") );
+
+
+
+
+        });
+
+    });
+
+    function xyz (){
+
+    }
 
 
 
     $(document).ready(function(){
-        // your page initialization code here
-        // the DOM will be available here
         start();
+
+        $("#btnAdd").click(function(){
+
+            if($("#new_name").val() ==""){
+                console.log("missing name!");
+                return;
+            }
+
+            const myHeaders = new Headers();
+
+            let formData = new FormData();
+            formData.append('token', '{{ CSRFTOKEN }}');
+            formData.append('action', 'add_group');
+            formData.append('name', $("#new_name").val() );
+            formData.append('desc', $("#new_desc").val() );
+
+
+            const myRequest = new Request('/admin/scripts/pi-hole/php/groups.php', {
+                method: 'POST',
+                credentials: "same-origin",
+                headers: myHeaders,
+                mode: 'cors',
+                cache: 'default',
+                body: formData
+            });
+            fetch(myRequest)
+                .then(response => response.json())
+                .then(function(data){
+                    console.log(data);
+                    $("#groupcards").html("");
+                    start();
+                });
+
+
+        });
+
+        /*
+
+        $("#new_name").val();
+        $("#new_desc").val();
+
+
+        POST :
+        action: add_group
+        name: xx
+        desc: xx
+        token: hM7s2PjWSt5bkzwm8xiVWQFZvQSGnf+Zqr8Ldc7hNx0=
+        /admin/scripts/pi-hole/php/groups.php
+
+
+        */
+
+
+        /*
+        POST :
+        action: delete_group
+        id: 7
+        token: hM7s2PjWSt5bkzwm8xiVWQFZvQSGnf+Zqr8Ldc7hNx0=
+
+        */
+
+
+
     });
+
 </script>
 <style>
     div.card-body ul li {
@@ -495,3 +626,4 @@
     </div>
 </div>
 {% endblock %}
+
