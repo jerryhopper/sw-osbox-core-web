@@ -47,6 +47,8 @@ class phDatabase {
         $this->client = new PiHoleDatabase\Client($pdo_gravity);
         $this->client_by_group = new PiHoleDatabase\ClientByGroup($pdo_gravity);
 
+        $this->queries = new PiHoleDatabase\Queries($pdo_ftl);
+
     }
 
 
