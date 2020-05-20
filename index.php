@@ -2,6 +2,13 @@
 
 require 'vendor/autoload.php';
 
+
+if( file_exists('../sw-osbox-core/src/osbox-constants.php') ){
+    require '../sw-osbox-core/src/osbox-constants.php';
+}
+
+
+
 require 'src/BlackBox.php';
 require 'src/blackbox/bbConfig.php';
 require 'src/blackbox/bbAuth.php';
@@ -260,44 +267,10 @@ $app->get('/api/queries/byip/{ip}', function ($request, $response, $args) {
 
 
 
-    $from = intval($_GET["from"]);
-    $until = intval($_GET["until"]);
-
-    $dbquery = "SELECT timestamp, type, domain, client, status FROM queries WHERE client=:client AND timestamp >= :from AND timestamp <= :until LIMIT 10";
-
-    $dbquery = "SELECT timestamp, type, domain, client, status FROM queries WHERE  timestamp >= :from AND timestamp <= :until LIMIT 10";
-
-    /*if(isset($_GET["types"]))
-    {
-        $types = $_GET["types"];
-        if(preg_match("/^[0-9]+(?:,[0-9]+)*$/", $types) === 1)
-        {
-            // Append selector to DB query. The used regex ensures
-            // that only numbers, separated by commas are accepted
-            // to avoid code injection and other malicious things
-            // We accept only valid lists like "1,2,3"
-            // We reject ",2,3", "1,2," and similar arguments
-            $dbquery .= "AND status IN (".$types.") ";
-        }
-        else
-        {
-            die("Error. Selector types specified using an invalid format.");
-        }
-    }*/
-    // $dbquery .= "ORDER BY timestamp ASC";
-
-    $stmt = $db->prepare($dbquery);
-
-    $stmt->bindValue(":from", intval($from), SQLITE3_INTEGER);
-    $stmt->bindValue(":until", intval($until), SQLITE3_INTEGER);
-    $results = $stmt->execute();
+    $r = $this->BlackBox->PiHole->queries->ByIp($args['ip']);
 
 
-    while ($row = $results->fetchArray()) {
-        $row[0];
-    }
-
-    return $response->withJson([]);
+    return $response->withJson($r);
 });
 
 
