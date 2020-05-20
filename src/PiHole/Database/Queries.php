@@ -8,6 +8,8 @@ class Queries
 {
     protected $tableName="queries";
 
+    var $tmpClients = array();
+
     function __construct($pdo)
     {
         $this->pdo = $pdo;
@@ -16,9 +18,9 @@ class Queries
 
     function resolveHostname($clientip, $printIP)
     {
-        global $clients;
+        $clients = $this->tmpClients;
         $ipaddr = strtolower($clientip);
-        if(array_key_exists($clientip, $clients))
+        if(array_key_exists($clientip, $this->clients))
         {
             // Entry already exists
             $clientname = $clients[$ipaddr];
@@ -40,6 +42,9 @@ class Queries
         // Buffer result
         $clients[$ipaddr] = $clientname;
 
+        $this->tmpClients = $clients;
+
+
         if($printIP)
             return $clientname."|".$clientip;
         return $clientname;
@@ -53,7 +58,7 @@ class Queries
         //$until = intval($until);
 
 
-        $dbquery = "SELECT timestamp, type, domain, client, status FROM queries WHERE client=:client  LIMIT 100";
+        $dbquery = "SELECT timestamp, type, domain, client, status FROM queries ";//WHERE client=:client ";
 
         //$dbquery = "SELECT timestamp, type, domain, client, status FROM queries WHERE  timestamp >= :from AND timestamp <= :until LIMIT 100";
 
@@ -74,26 +79,35 @@ class Queries
                     die("Error. Selector types specified using an invalid format.");
                 }
             }*/
-            $dbquery .= "ORDER BY timestamp ASC";
+            $dbquery .= "ORDER BY timestamp ASC LIMIT 0,100";
 
-        $stmt = $db->prepare($dbquery);
+        $stmt = $this->pdo->prepare($dbquery);
 
         //$stmt->bindValue(":from", intval($from), SQLITE3_INTEGER);
         //$stmt->bindValue(":until", intval($until), SQLITE3_INTEGER);
-        $stmt->bindValue(":client", $ip, SQLITE3_STRING);
+        //$stmt->bindValue(":client", $ip);
         $results = $stmt->execute();
 
         $data = array();
 
-        $results = $stmt->execute();
-        if(!is_bool($results))
-            while ($row = $results->fetchArray())
+
+        //var_dump($stmt->fetchAll());
+
+        //if(!is_bool($results))
+            //echo "x";
+            $all = $stmt->fetchAll();
+            //var_dump($all);
+
+            foreach( $all as $row  )
             {
-                $c = $this->resolveHostname($row[3],false);
+                //print_r($row);
+
+
+                $c = $this->resolveHostname($row['client'],false);
 
                 // Convert query type ID to name
                 // Names taken from FTL's query type names
-                switch($row[1]) {
+                switch($row['type']) {
                     case 1:
                         $query_type = "A";
                         break;
@@ -123,14 +137,14 @@ class Queries
                         break;
                 }
                 // array:        time     type         domain                client           status
-                $allQueries[] = [$row[0], $query_type, utf8_encode($row[2]), utf8_encode($c), $row[4]];
+                $allQueries[] = [$row['timestamp'], $query_type, utf8_encode($row['domain']), utf8_encode($c), $row['client']];
             }
-        }
+
         $result = array('data' => $allQueries);
         $data = array_merge($data, $result);
 
-        return $response->withJson($data);
-}
+        return $data;
+    }
 
 
 }
