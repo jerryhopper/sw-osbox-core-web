@@ -124,13 +124,59 @@ if ($serverName === "blackbox.surfwijzer.nl"
 
 */
 
+if ( isset($_GET['blocklist']) && $_GET['blocklist']!=="" ){
+
+# detect account.
+
+
+    # request blocklist with auth.
+    $client = new \GuzzleHttp\Client([
+        // Base URI is used with relative requests
+        'base_uri' => 'https://setup.surfwijzer.nl',
+        // You can set any number of default request options.
+        'timeout'  => 12.0,
+    ]);
+    // Send a request to https://foo.com/root
+    $guzzleresponse = $client->request('GET', '/blacklist/'.$_GET['blocklist'] , [
+        'headers' => [
+            'User-Agent' => 'testing/1.0',
+            'Accept'     => 'application/json',
+            'Authorizatioon' => "token"
+        ]
+    ]);
+
+    //$code = $guzzleresponse->getStatusCode(); // 200
+    //$reason = $guzzleresponse->getReasonPhrase(); // OK
+
+    $body = $guzzleresponse->getBody();
+
+    //$remainingBytes = $body->getContents();
+
+
+//$guzzleresponse->getStatusCode()
+
+    header("HTTP/1.1 ".$guzzleresponse->getStatusCode()." ".$guzzleresponse->getReasonPhrase() );
+    echo $body->getContents();
+    die();
+
+}
+
 
 
 
 
 session_start();
 // Create Slim app
-$app = new \Slim\App();
+$slimSettings = array('determineRouteBeforeAppMiddleware' => true);
+
+#if (ENVIRONMENT === 'dev')
+#{
+$slimSettings['displayErrorDetails'] = true;
+#}
+
+$slimConfig = array('settings' => $slimSettings);
+
+$app = new \Slim\App($slimConfig );
 
 
 
@@ -161,7 +207,6 @@ $container['view'] = function ($c) {
 
     return $view;
 };
-
 
 
 
@@ -201,6 +246,21 @@ $token = $_SESSION['token'];
  *
  **/
 
+
+$app->get('/blacklist/{list}', function ($request, $response, $args) {
+    return $response->write("YESS");
+    //return $this->view->render("unregistered/index.html");
+//    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
+})->setName('blacklist_list');
+
+
+//echo "x";
+
+
+#echo "**".$_SERVER['REQUEST_URI'];
+
+
+
 $app->get('/osbox/test', function ($request, $response, $args) {
 
     return $response->withJson("/osbox/test");
@@ -235,6 +295,42 @@ $app->get('/groups/{groupid}', function ($request, $response, $args) {
 })->setName('page_groups');
 
 
+$app->get('/blacklist/{blacklist}', function ($request, $response, $args) {
+
+    # detect account.
+
+
+    # request blocklist with auth.
+    $client = new \GuzzleHttp\Client([
+        // Base URI is used with relative requests
+        'base_uri' => 'https://setup.surfwijzer.nl',
+        // You can set any number of default request options.
+        'timeout'  => 12.0,
+    ]);
+    // Send a request to https://foo.com/root
+    $guzzleresponse = $client->request('GET', '/blacklist/'.$args['blacklist'] , [
+        'headers' => [
+            'User-Agent' => 'testing/1.0',
+            'Accept'     => 'application/json',
+            'Authorizatioon' => "token"
+        ]
+    ]);
+
+    //$code = $guzzleresponse->getStatusCode(); // 200
+    //$reason = $guzzleresponse->getReasonPhrase(); // OK
+
+    $body = $guzzleresponse->getBody();
+
+    //$remainingBytes = $body->getContents();
+
+
+
+
+    return $response->write($body->getContents())->withStatus($guzzleresponse->getStatusCode());
+    # present blokclist
+
+    //return $this->view->render( $response, $this->BlackBox->showpage( "group.html", $request ), $this->BlackBox->UiParameters(["CSRFTOKEN"=>$_SESSION['token'],"PAGE"=>".page_groups"]));
+})->setName('blocklists');
 
 
 
@@ -247,6 +343,8 @@ $app->get('/', function ($request, $response, $args) {
     #[user][userEmail] => hopper.jerry@gmail.com
     #print_r($request->getAttribute("AUTH"));
     #die();
+
+
 
     #die();
     ;
