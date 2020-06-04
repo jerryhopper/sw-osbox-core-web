@@ -126,7 +126,7 @@ if ($serverName === "blackbox.surfwijzer.nl"
 
 if ( isset($_GET['blocklist']) && $_GET['blocklist']!=="" ){
 
-# detect account.
+    # detect account.
 
 
     # request blocklist with auth.
@@ -247,7 +247,7 @@ $token = $_SESSION['token'];
  **/
 
 
-$app->get('/blacklist/{list}', function ($request, $response, $args) {
+$app->get('/XXblacklist/{list}', function ($request, $response, $args) {
     return $response->write("YESS");
     //return $this->view->render("unregistered/index.html");
 //    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
