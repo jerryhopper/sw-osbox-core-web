@@ -246,7 +246,6 @@ $token = $_SESSION['token'];
  *
  **/
 
-
 $app->get('/XXblacklist/{list}', function ($request, $response, $args) {
     return $response->write("YESS");
     //return $this->view->render("unregistered/index.html");
