@@ -246,7 +246,7 @@ $token = $_SESSION['token'];
  *
  **/
 
-$app->get('/XXblacklist/{list}', function ($request, $response, $args) {
+$app->get('/THEXXblacklist/{list}', function ($request, $response, $args) {
     return $response->write("YESS");
     //return $this->view->render("unregistered/index.html");
 //    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
@@ -267,7 +267,6 @@ $app->get('/osbox/test', function ($request, $response, $args) {
 
     //return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
 })->setName('page_dashboard');
-
 
 
 $app->get('/test', function ($request, $response, $args) {
